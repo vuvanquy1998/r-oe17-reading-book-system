@@ -31,3 +31,6 @@ bower.json
 .byebug_history
 
 node_modules/
+
+config/database.yml
+config/secrets.yml
