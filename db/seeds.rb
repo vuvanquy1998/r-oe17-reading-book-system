@@ -10,30 +10,30 @@ Role.create!(name: "admin")
 
 User.create!(name: "admin",
   email: "admin@gmail.com",
-  password: "admin1998",
+  password: "admin", password_confirmation: "admin",
   status: false,
-  role_id = "admin")
+  role_id: 3)
 20.times do |n|
   name = Faker::Name.name
   email = "user#{n+1}@gmail.com"
-  password = "password"
-  role_id = "normal"
+  password = "password",
+  role_id = 1
   User.create!(name: name,
     status: false,
-    password: password,
+    password: password, password_confirmation: password,
     role_id: role_id,
     email: email)
 end
 
 100.times do |n|
   name = Faker::Name.name,
-  category_id = n%Category.count,
-  user_id = n%User.count,
+  category_id = n%Category.count+1,
+  user_id = n%User.count+1,
   status = true,
   description = "description#{n}"
   Book.create!(name: name,
     category_id: category_id,
     status: status,
     description: description,
-    user_id: user_id,
-  end
+    user_id: user_id)
+end

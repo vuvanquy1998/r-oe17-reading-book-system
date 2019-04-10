@@ -4,7 +4,7 @@ class CreateUsers < ActiveRecord::Migration[5.1]
       t.references :role, foreign_key: true
       t.string :name
       t.string :email
-      t.string :status, default: "normal"
+      t.boolean :status, default: false
 
       t.timestamps
     end
