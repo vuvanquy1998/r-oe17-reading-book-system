@@ -1,0 +1,47 @@
+#error_explanation {
+  color: red;
+  ul {
+    color: red;
+    margin: 0 0 30px 0;
+  }
+}
+
+.field_with_errors {
+  @extend .has-error;
+  .form-control {
+    color: $state-danger-text;
+  }
+}
+
+// session new.html
+
+.padding_top_30 {
+  padding-top: 30px;
+}
+.margin_bottom_25{
+  margin-bottom: 25px;
+}
+.margin_top_10{
+  margin-top: 10px;
+}
+.margin_top_50{
+  margin-top: 50px;
+}
+ #bForgot_pw{
+  float:right;
+  font-size: 80%;
+  position: relative;
+  top:-10px
+ }
+#bSignup{
+  border-top:1px solid #888;
+  padding-top:15px;
+  font-size:85%
+}
+.float_right{
+  float: right;
+}
+#icon_gg{
+  font-size:16px;
+  margin-right:5px
+}
