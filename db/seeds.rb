@@ -10,17 +10,17 @@ Role.create!(name: "admin")
 
 User.create!(name: "admin",
   email: "admin@gmail.com",
-  password: "admin", password_confirmation: "admin",
+  password: "password", password_confirmation: "password",
   status: false,
   role_id: 3)
+
 20.times do |n|
   name = Faker::Name.name
   email = "user#{n+1}@gmail.com"
-  password = "password",
   role_id = 1
   User.create!(name: name,
     status: false,
-    password: password, password_confirmation: password,
+    password: "password", password_confirmation: "password",
     role_id: role_id,
     email: email)
 end
