@@ -20,6 +20,17 @@ class User < ApplicationRecord
     minimum: Settings.pass_min}, allow_nil: true
   scope :ordered_by_name, -> {order name: :asc}
 
+  def self.create_with_omniauth(auth)
+    create! do |user|
+      user.provider = auth.provider
+      user.email = auth.info.email
+      user.id = auth.uid
+      user.name = auth.info.name
+      user.password = "password"
+      user.password_confirmation = "password"
+    end
+  end
+
   class << self
     def digest(string)
       cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
