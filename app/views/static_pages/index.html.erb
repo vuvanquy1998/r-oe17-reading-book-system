@@ -1,0 +1,487 @@
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#">
+    <%= image_tag("dam_bi_ghet.jpg", style: "border-radius: 50%; width: 50px;
+    height: 50px") %> Admin
+  </a><hr>
+  <a href="#" id="btn_dashboard" class="active_div" onclick="redirect_dashboard()">Trang điều khiển</a><br>
+  <a href="#" id="btn_user" onclick="redirect_user()">Người dùng</a><br>
+  <a href="#" id="btn_book" onclick="redirect_book()">Sách</a><br>
+  <a href="#" id="btn_cmt" onclick="redirect_cmt()">Bình luận</a>
+</div>
+
+<div id="main">
+  <span style="font-size:24px;cursor:pointer" onclick="openNav()">&#9776; Dashboard</span><hr>
+  <div id="div_dashboard">
+    <div class="row" style="margin-top: 30px">
+      <div class="col-sm-3 col-md-3">
+        <div class="panel panel-default bg-yellow update-panel">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-9 col-md-9">
+                <h3><%= count_online %></h3>
+                <h4>người online</h4>
+              </div>
+              <div class="col-sm-3 col-md-3" style="float: right">
+                <i class="fa fa-user" style="font-size: 50px; float: right;
+                  position: relative; top: 25px; color: #fe9365;"></i>
+              </div>
+            </div>
+            <hr>
+            <h4>Tổng số <%= count_user %> người</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <div class="panel panel-default bg-green update-panel">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-9 col-md-9">
+                <h3><%= book_released %></h3>
+                <h4>sách đăng</h4>
+              </div>
+              <div class="col-sm-3 col-md-3" style="float: right">
+                <i class="fa fa-address-book" style="font-size: 50px; float: right;
+                  position: relative; top: 25px; color: #0ac282;"></i>
+              </div>
+            </div>
+            <hr>
+            <h4>Tổng số <%= count_book %> sách</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <div class="panel panel-default bg-pink update-panel">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-9 col-md-9">
+                <h3><%= count_comment %></h3>
+                <h4>bình luận</h4>
+              </div>
+              <div class="col-sm-3 col-md-3" style="float: right">
+                <i class="fa fa-comment" style="font-size: 50px; float: right;
+                  position: relative; top: 25px; color: #fe5d70;"></i>
+              </div>
+            </div>
+            <hr>
+            <h4>Tổng số <%= book_has_cmt %> sách</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        <div class="panel panel-default bg-blue update-panel">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-sm-9 col-md-9">
+                <h3><%= count_like %></h3>
+                <h4>lượt thích</h4>
+              </div>
+              <div class="col-sm-3 col-md-3" style="float: right">
+                <i class="fa fa-thumbs-up" style="font-size: 50px; float: right;
+                  position: relative; top: 25px; color: #01a9ac;"></i>
+              </div>
+            </div>
+            <hr>
+            <h4>Tổng số <%= book_has_like %> sách</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top: 60px">
+      <div class="col-sm-7 col-md-7" style="background-color: #f3f3f3">
+        <h3>Thống kê dữ liệu</h3>
+        <canvas id="myChart" width="300" height="300" style="padding: 20px"></canvas>
+      </div>
+      <div class="col-sm-1 col-md-1"></div>
+      <div class="col-sm-4 col-md-4" style="background-color: #f3f3f3">
+        <h3>Lịch sử người dùng</h3>
+        <% @all_histories.each do |history| %>
+          <div class="media">
+            <div class="media-left">
+              <%= image_tag("pf_image.jpg", class: "media-object", style: "width:55px") %>
+            </div>
+            <div class="media-body">
+              <h4 class="media-heading"><%= link_to history.user.name, history.user %></h4>
+              <% case history.activity_type %>
+                <% when "like" %>
+                  <% like = history.user.likes.find_by(id: history.activity_id) %>
+                  <% if like.present? %>
+                    <p>
+                      <%= history.user.name %> đã thích cuốn sách
+                      <%= link_to like.book.name, [like.book.category, like.book] %>
+                      của
+                      <%= link_to like.book.user.name, like.book.user %>
+                    </p>
+                    <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+                  <% end %>
+                <% when "follow" %>
+                  <% follow = history.user.follows.find_by(id: history.activity_id) %>
+                  <% if follow.present? %>
+                    <p>
+                      <%= history.user.name %> đã theo dõi thể loại
+                      <%= link_to follow.category.name, follow.category %>
+                    </p>
+                    <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+                  <% end %>
+                <% when "add_comment" %>
+                  <% comment = history.user.comments.find_by(id: history.activity_id) %>
+                  <% if comment.present? %>
+                    <p>
+                      <%= history.user.name %> đã bình luận trong cuốn sách
+                      <%= link_to comment.book.name, [comment.book.category, comment.book] %>
+                      của
+                      <%= link_to comment.book.user.name, comment.book.user %>
+                    </p>
+                    <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+                  <% end %>
+                <% when "add_book" %>
+                  <% book = Book.find_by(id: history.activity_id) %>
+                  <% if book.present? %>
+                    <p>
+                      <%= history.user.name %> đã thêm cuốn sách
+                      <%= link_to book.name, [book.category, book] %>
+                    </p>
+                    <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+                  <% end %>
+                <% when "add_chapter" %>
+                  <% chapter = Chapter.find_by(id: history.activity_id) %>
+                  <% if chapter.present? %>
+                    <p>
+                      <%= history.user.name %> đã thêm chapter
+                      <%= link_to chapter.name, [chapter.book.category, chapter.book, chapter] %>
+                      vào cuốn sách
+                      <%= link_to chapter.book.name, [chapter.book.category, chapter.book] %>
+                      của
+                      <%= link_to chapter.book.user.name, chapter.book.user %>
+                    </p>
+                    <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+                  <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <div class="text-center">
+          <%= will_paginate @all_histories %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="div_user" style="display: none">
+    <h4 class="text-info" style="margin-top: 30px">Quản lý người dùng</h4>
+    <table class="table table-bordered" style="margin-top: 40px">
+      <thead>
+        <tr>
+          <th>Tên người dùng</th>
+          <th>Email</th>
+          <th>Quyền</th>
+          <th>Trạng thái</th>
+          <th>Thời gian tạo</th>
+          <th>Cập nhật</th>
+          <th>Phân quyền</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="color: red">
+          <td><%= @admin.name %></td>
+          <td><%= @admin.email %></td>
+          <td>
+            <%= @admin.role.name %>
+          </td>
+          <td>
+            <% if @admin.status %>
+              Online
+            <% else %>
+              Offline
+            <% end %>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <% @all_user.each do |user| %>
+        <tr id="user_<%= user.id %>">
+          <td>
+            <%= link_to user do %>
+            <%= user.name %>
+            <% end %>
+          </td>
+          <td><%= user.email %></td>
+          <td><%= user.role.name %></td>
+          <td>
+            <% if user.status %>
+            Online
+            <% else %>
+            Offline
+            <% end %>
+          </td>
+          <td><%= time_ago_in_words(user.created_at) %> ago</td>
+          <td><%= time_ago_in_words(user.updated_at) %> ago</td>
+          <td>
+            <% if current_user.role_id == 3 %>
+              <% if user.role_id == 2 %>
+                <%= link_to edit_user_path(user), remote: true do %>
+                  <i class="fas fa-lock-open"></i>
+                <% end %>
+              <% else %>
+                <%= link_to edit_user_path(user), remote: true do %>
+                  <i class="fas fa-lock"></i>
+                <% end %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <br>
+    <%= link_to "Export users", export_users_path(format: :csv), class: "btn btn-info" %>
+  </div>
+  <div id="div_book" style="display: none">
+    <h4 class="text-info" style="margin-top: 30px">Quản lý sách</h4>
+    <table class="table table-bordered" style="margin-top: 40px">
+      <thead>
+        <tr>
+          <th>Người đăng</th>
+          <th>Thể loại</th>
+          <th>Tên sách</th>
+          <th>Mô tả</th>
+          <th>Trạng thái</th>
+          <th>Được tạo</th>
+          <th>Cập nhật</th>
+          <th>Duyệt</th>
+          <th>Xóa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @all_book.each do |book| %>
+          <tr id="book_<%= book.id %>">
+            <td>
+              <%= link_to book.user do %>
+                <%= book.user.name %>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to book.category do %>
+              <%= book.category.name %>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to [book.category, book] do %>
+                <%= book.name %>
+              <% end %>
+            </td>
+            <td><%= book.description %></td>
+            <td>
+              <% if book.status %>
+                published
+              <% else %>
+                unpublished
+              <% end %>
+            </td>
+            <td><%= time_ago_in_words(book.created_at) %> ago</td>
+            <td><%= time_ago_in_words(book.updated_at) %> ago</td>
+            <td>
+                <% if current_user.role_id == 3 %>
+                  <% if book.status %>
+                    <%= link_to edit_admin_book_path(book), remote: true do %>
+                      <i class="fas fa-lock-open"></i>
+                    <% end %>
+                  <% else %>
+                    <%= link_to edit_admin_book_path(book), remote: true do %>
+                      <i class="fas fa-lock"></i>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <% if current_user.role_id > book.user.role_id ||
+                    current_user.id == book.user.id %>
+                    <% if book.status %>
+                      <%= link_to edit_admin_book_path(book), remote: true do %>
+                        <i class="fas fa-lock-open"></i>
+                      <% end %>
+                    <% else %>
+                      <%= link_to edit_admin_book_path(book), remote: true do %>
+                        <i class="fas fa-lock"></i>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+            </td>
+            <td>
+              <% if book.user.id == current_user.id %>
+                <%= link_to admin_book_path(book), method: :delete, remote: true,
+                  data: {confirm: "Are you sure?"} do %>
+                  <i class="far fa-trash-alt"></i>
+                <% end %>
+              <% else %>
+                <% notification = Notification.where(used_send: current_user.id,
+                    activity_type: "delete_book", activity_id: book.id).first %>
+                <% if current_user.role_id == 3 %>
+                  <% if notification.present? %>
+                    <%= link_to admin_book_path(book), method: :put,
+                      remote: true do %>
+                      <i class="fa fa-spinner fa-spin"></i>
+                    <% end %>
+                  <% else %>
+                    <%= link_to admin_book_path(book), method: :put, remote: true do %>
+                      <i class="far fa-trash-alt"></i>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <% if current_user.role_id > book.user.role_id %>
+                    <% if notification.present? %>
+                      <%= link_to admin_book_path(book), method: :put, remote: true do %>
+                      <i class="fa fa-spinner fa-spin"></i>
+                    <% end %>
+                    <% else %>
+                      <%= link_to admin_book_path(book), method: :put, remote: true do %>
+                        <i class="far fa-trash-alt"></i>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+            <% end %>
+          </tbody>
+        </table>
+    <div class="text-center">
+      <%= will_paginate @all_book %>
+    </div>
+    <div class="edit_book"></div>
+  </div>
+  <div id="div_cmt" style="display: none">
+    <h4 class="text-info" style="margin-top: 30px">Bình luận</h4>
+    <table class="table table-bordered" style="margin-top: 40px">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Book</th>
+          <th>Content</th>
+          <th>Created_at</th>
+          <th>Updated_at</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @all_cmt.each do |comment| %>
+        <tr id="cmt_<%= comment.id %>">
+          <td>
+            <%= link_to comment.user do %>
+            <%= comment.user.name %>
+            <% end %>
+          </td>
+          <td>
+            <%= link_to [comment.book.category, comment.book] do %>
+            <%= comment.book.name %>
+            <% end %>
+          </td>
+          <td><%= comment.content %></td>
+          <td><%= time_ago_in_words(comment.created_at) %> ago</td>
+          <td><%= time_ago_in_words(comment.updated_at) %> ago</td>
+          <td>
+            <% if current_user.role_id == 3 %>
+            <%= link_to admin_comment_path(comment), method: :delete, remote: true do %>
+            <i class="far fa-trash-alt"></i>
+            <% end %>
+            <% else %>
+            <% if current_user.role_id > comment.user.role_id ||
+              current_user.id == comment.user.id %>
+              <%= link_to admin_comment_path(comment), method: :delete, remote: true do %>
+              <i class="far fa-trash-alt"></i>
+              <% end %>
+              <% end %>
+              <% end %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div class="text-center">
+        <%= will_paginate @all_cmt %>
+      </div>
+  </div>
+</div>
+
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+}
+
+var ctx = document.getElementById("myChart").getContext("2d");
+var myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: ["User", "Category", "Book", "Chapter", "Comment", "Like"],
+        datasets: [{
+            label: "số lượng",
+            data: [<%= count_user %>, <%= Category.count %>, <%= count_book %>, <%= Chapter.count %>, <%= count_comment %>, <%= count_like %>],
+            backgroundColor: [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+                "rgba(255, 159, 64, 0.2)"
+            ],
+            borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 159, 64, 1)"
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+
+function redirect_dashboard() {
+  document.getElementsByClassName("active_div")[0].classList.remove("active_div");
+  document.getElementById("btn_dashboard").classList.add("active_div");
+  document.getElementById("div_dashboard").style.display = "block";
+  document.getElementById("div_user").style.display = "none";
+  document.getElementById("div_book").style.display = "none";
+  document.getElementById("div_cmt").style.display = "none";
+}
+function redirect_user() {
+  document.getElementsByClassName("active_div")[0].classList.remove("active_div");
+  document.getElementById("btn_user").classList.add("active_div");
+  document.getElementById("div_user").style.display = "block";
+  document.getElementById("div_dashboard").style.display = "none";
+  document.getElementById("div_book").style.display = "none";
+  document.getElementById("div_cmt").style.display = "none";
+}
+function redirect_book() {
+  document.getElementsByClassName("active_div")[0].classList.remove("active_div");
+  document.getElementById("btn_book").classList.add("active_div");
+  document.getElementById("div_book").style.display = "block";
+  document.getElementById("div_user").style.display = "none";
+  document.getElementById("div_dashboard").style.display = "none";
+  document.getElementById("div_cmt").style.display = "none";
+}
+function redirect_cmt() {
+  document.getElementsByClassName("active_div")[0].classList.remove("active_div");
+  document.getElementById("btn_cmt").classList.add("active_div");
+  document.getElementById("div_cmt").style.display = "block";
+  document.getElementById("div_user").style.display = "none";
+  document.getElementById("div_book").style.display = "none";
+  document.getElementById("div_dashboard").style.display = "none";
+}
+</script>

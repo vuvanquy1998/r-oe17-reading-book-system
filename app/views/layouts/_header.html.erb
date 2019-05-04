@@ -1,0 +1,79 @@
+<nav class="navbar navbar-inverse" id="header" style="border-radius: 0">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <%= link_to "Read Book Online", home_path, class: "navbar-brand" %>
+    </div>
+    <ul class="nav navbar-nav">
+      <li style="margin: 0 12px 0 20px">
+        <%= link_to "Trang chủ", home_path %>
+      </li>
+      <% if logged_in? %>
+        <li class="dropdown" style="margin-right: 12px">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Bộ sưu tập <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <% if logged_in? %>
+              <li><%= link_to "Theo dõi", new_user_follow_path(current_user) %></li>
+              <li>
+                <%= link_to "Sách của tôi", books_path %>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      <% end %>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          Thông tin <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <% if logged_in? %>
+            <li>
+              <%= link_to "Nhật ký hoạt động", user_histories_path(current_user) %>
+            </li>
+            <li>
+              <%= link_to "Thông báo", notifications_path %>
+            </li>
+          <% end %>
+        </ul>
+      </li>
+    </ul>
+    <% if logged_in? %>
+      <ul class="nav navbar-right">
+        <li class="dropdown" style="float: right">
+          <a href="#" class="dropdown-toggle text-muted" data-toggle="dropdown">
+            <%= image_tag("dam_bi_ghet.jpg", style: "border-radius: 50%; width: 30px;
+            height: 30px; margin-right: 6px") %>
+            <%= current_user.name %> <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <% if current_user.role_id == 3 || current_user.role_id == 2 %>
+              <li><%= link_to "Dashboard", admin_path %></li>
+            <% end %>
+            <li><%= link_to "Trang cá nhân", current_user %></li>
+            <li><%= link_to "Đăng xuất", logout_path, method: :delete %></li>
+          </ul>
+        </li>
+      </ul>
+    <% else %>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <%= link_to root_path do %>
+            <span class="glyphicon glyphicon-log-in" style="margin-right: 7px">
+            </span>Đăng nhập
+          <% end %>
+        </li>
+      </ul>
+    <% end %>
+    <form class="navbar-form navbar-right" action="/action_page.php">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search" name="search">
+        <div class="input-group-btn">
+          <button class="btn btn-primary" type="submit">
+            <i class="glyphicon glyphicon-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</nav>
