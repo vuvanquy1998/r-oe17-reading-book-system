@@ -10,7 +10,6 @@ gem "bcrypt", "3.1.12"
 gem "bootstrap-sass"
 gem "carrierwave"
 gem "coffee-rails", "~> 4.2"
-gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 gem "font-awesome-sass"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
@@ -27,11 +26,18 @@ gem "will_paginate", "3.1.6"
 gem "will_paginate-bootstrap"
 gem "chartkick"
 gem "csv"
+gem "faker", :git => "https://github.com/stympy/faker.git", :branch => "master"
 
 group :development, :test do
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
   gem "capybara", ">= 2.15"
   gem "selenium-webdriver"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "ffaker"
+  gem "shoulda-matchers", "~> 3.1"
+  gem "rails-controller-testing"
+  gem "database_cleaner"
 end
 
 group :development do
@@ -42,3 +48,4 @@ group :development do
 end
 
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "simplecov", require: false, group: :test
