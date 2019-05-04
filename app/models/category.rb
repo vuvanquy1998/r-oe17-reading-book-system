@@ -1,5 +1,6 @@
 class Category < ApplicationRecord
-  has_many :follows
+  validates :name, presence: true, uniqueness: true
+  has_many :follows, dependent: :destroy
   has_many :users, through: :follows
-  has_many :books
+  has_many :books, dependent: :destroy
 end

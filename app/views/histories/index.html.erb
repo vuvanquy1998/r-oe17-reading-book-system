@@ -1,0 +1,67 @@
+<div class="animate col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2"
+  style="padding-top: 50px">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div class="panel-title">Nhật ký hoạt động</div>
+    </div>
+    <div class="panel-body">
+      <% @histories.each do |history| %>
+        <% case history.activity_type %>
+          <% when "like" %>
+            <% like = current_user.likes.find_by(id: history.activity_id) %>
+            <% if like.present? %>
+              <p>
+                <%= link_to current_user.name, current_user %> đã thích cuốn sách
+                <%= link_to like.book.name, [like.book.category, like.book] %>
+                của
+                <%= link_to like.book.user.name, like.book.user %>
+              </p>
+              <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+            <% end %>
+          <% when "follow" %>
+            <% follow = current_user.follows.find_by(id: history.activity_id) %>
+            <% if follow.present? %>
+              <p>
+                <%= link_to current_user.name, current_user %> đã theo dõi thể loại
+                <%= link_to follow.category.name, follow.category %>
+              </p>
+              <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+            <% end %>
+          <% when "add_comment" %>
+            <% comment = current_user.comments.find_by(id: history.activity_id) %>
+            <% if comment.present? %>
+              <p>
+                <%= link_to current_user.name, current_user %> đã bình luận trong cuốn sách
+                <%= link_to comment.book.name, [comment.book.category, comment.book] %>
+                của
+                <%= link_to comment.book.user.name, comment.book.user %>
+              </p>
+              <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+            <% end %>
+          <% when "add_book" %>
+            <% book = Book.find_by(id: history.activity_id) %>
+            <% if book.present? %>
+              <p>
+                <%= link_to current_user.name, current_user %> đã thêm cuốn sách
+                <%= link_to book.name, [book.category, book] %>
+              </p>
+              <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+            <% end %>
+          <% when "add_chapter" %>
+            <% chapter = Chapter.find_by(id: history.activity_id) %>
+            <% if chapter.present? %>
+              <p>
+                <%= link_to current_user.name, current_user %> đã thêm chapter
+                <%= link_to chapter.name, [chapter.book.category, chapter.book, chapter] %>
+                vào cuốn sách
+                <%= link_to chapter.book.name, [chapter.book.category, chapter.book] %>
+                của
+                <%= link_to chapter.book.user.name, chapter.book.user %>
+              </p>
+              <small class="text-info"><%= time_ago_in_words(history.created_at) %> ago</small><hr>
+            <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
