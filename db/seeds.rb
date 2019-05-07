@@ -25,7 +25,8 @@ Category.create!(name: "Tâm Lý - Kỹ Năng Sống")
 Category.create!(name: "Văn hóa - Tôn giáo")
 Category.create!(name: "Lịch sử - Chính trị")
 
-
+# Book.create!(name: "Game of thrones", category_id: 1, status: true, description:
+#   "Hay, hap dan, loi cuon", user_id: 1)
 20.times do |n|
   name = Faker::Name.name[0..10]
   Author.create!(name: name)

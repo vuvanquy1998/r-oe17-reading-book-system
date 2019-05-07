@@ -8,6 +8,7 @@ class Book < ApplicationRecord
   has_many :users, through: :comments
   has_many :writers, dependent: :destroy
   has_many :authors, through: :writers
+  validates :user_id, presence: true
   validates :category_id, presence: true
   validates :name, presence: true
   validates :description, presence: true

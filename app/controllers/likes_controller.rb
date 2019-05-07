@@ -34,7 +34,6 @@ class LikesController < ApplicationController
 
   def destroy
     @like = current_user.likes.find_by(book_id: params[:book_id])
-    current_user.histories.where(activity_type: "like", activity_id: @like.id).first.destroy
     @like.destroy
     if current_user.id != @book.user.id
       Notification.where(used_send: current_user.id,
